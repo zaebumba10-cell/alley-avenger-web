@@ -28,40 +28,19 @@
 // Engine, so it does nothing when the game is opened in a plain browser.
 
 export const HAPTICS = {
-  // A single short tick — the smallest thing worth feeling.
-  tick: {
-    events: [
-      { type: 'transient', time: 0, intensity: 0.5, sharpness: 0.8 }
-    ]
-  },
+  tick: { events: [{ intensity: 0.5, sharpness: 0.8, time: 0, type: 'transient' }] },
 
-  // A crack followed by a fading rumble. A tap alone reads as a click; the tail
-  // is what makes it read as an impact.
-  impact: {
-    events: [
-      { type: 'transient', time: 0, intensity: 1, sharpness: 0.9 },
-      { type: 'continuous', time: 0.02, duration: 0.28, intensity: 0.55, sharpness: 0.2 }
-    ]
-  },
+  impact: { events: [{ intensity: 1, sharpness: 0.9, time: 0, type: 'transient' }, { duration: 0.28, intensity: 0.55, sharpness: 0.2, time: 0.02, type: 'continuous' }] },
 
-  // A curve ramps a value smoothly across an event, which stepped segments
-  // cannot do. This one swells and falls away.
-  charge: {
-    events: [
-      { type: 'continuous', time: 0, duration: 0.8, intensity: 0.4, sharpness: 0.3 }
-    ],
-    curves: [
-      {
-        parameter: 'intensity',
-        time: 0,
-        points: [
-          { time: 0, value: 0.1 },
-          { time: 0.6, value: 1 },
-          { time: 0.8, value: 0 }
-        ]
-      }
-    ]
-  }
+  charge: { curves: [{ parameter: 'intensity', points: [{ time: 0, value: 0.1 }, { time: 0.6, value: 1 }, { time: 0.8, value: 0 }], time: 0 }], events: [{ duration: 0.8, intensity: 0.4, sharpness: 0.3, time: 0, type: 'continuous' }] },
+
+  'web-shot': { events: [{ intensity: 0.4, sharpness: 0.9, time: 0, type: 'transient' }] },
+
+  'web-release': { events: [{ intensity: 0.3, sharpness: 0.5, time: 0, type: 'transient' }] },
+
+  'orb-collect': { events: [{ intensity: 0.7, sharpness: 1, time: 0, type: 'transient' }, { intensity: 0.5, sharpness: 0.9, time: 0.08, type: 'transient' }] },
+
+  crash: { events: [{ intensity: 1, sharpness: 0.1, time: 0, type: 'transient' }, { decayTime: 0.4, duration: 0.35, intensity: 0.5, sharpness: 0.15, time: 0.03, type: 'continuous' }] }
 };
 
 const channel =

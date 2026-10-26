@@ -1,16 +1,9 @@
 :root {
-  color-scheme: light dark;
-  --bg: #f4f5f7;
-  --fg: #10131a;
-  --muted: #6b7280;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #10131a;
-    --fg: #f4f5f7;
-    --muted: #9aa3b2;
-  }
+  color-scheme: light;
+  /* The game owns its palette: a bright day city, dark navy type. */
+  --bg: #9fc4e8;
+  --fg: #123a6d;
+  --muted: #4a6484;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -52,6 +45,9 @@ html, body {
 }
 
 #hud > * { pointer-events: auto; }
+
+/* Readouts are never controls — the thumb passes through them to the canvas. */
+.hud-text { pointer-events: none; }
 
 .hud-button {
   width: 64px;

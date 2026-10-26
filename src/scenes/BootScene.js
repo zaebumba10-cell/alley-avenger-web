@@ -1,53 +1,69 @@
-// The starting screen. Replace it, or add scenes alongside it and switch with
-// this.game.start(OtherScene).
+// The title screen: a quiet street canyon with the hero waiting on the sidewalk.
 
 import * as THREE from 'three';
 import { Scene } from '../scene.js';
-import { addText } from '../hud.js';
-import { themeColor } from '../theme.js';
+import { addText, addButton, clearHUD } from '../hud.js';
+import * as city from '../city.js';
+import { CityScene } from './CityScene.js';
+import { createHero, updateHeroPose } from '../hero.js';
 
 export class BootScene extends Scene {
   create() {
-    // A MeshStandardMaterial with nothing lighting it renders pure black, so
-    // every scene needs at least one light. Ambient fills the shadows, the
-    // directional gives the shape somewhere to catch.
-    this.root.add(new THREE.AmbientLight(0xffffff, 1.2));
+    city.resetShared();
+    city.buildSky(this.root);
+    city.addLights(this.root);
+    this.root.add(city.buildGround(this.root));
+    this.root.add(city.buildEnvironment(this.root));
 
-    const key = new THREE.DirectionalLight(0xffffff, 2);
-    key.position.set(3, 6, 4);
-    this.root.add(key);
+    for (let i = 0; i < 4; i++) {
+      const chunk = city.makeChunk(Math.random);
+      chunk.position.z = 14 - i * city.CHUNK_SPACING;
+      this.root.add(chunk);
+    }
 
-    this.cube = new THREE.Mesh(
-      new THREE.BoxGeometry(2, 2, 2),
-      new THREE.MeshStandardMaterial({
-        color: themeColor('--fg'),
-        roughness: 0.35,
-        metalness: 0.1
-      })
-    );
-    this.root.add(this.cube);
+    this.hero = createHero();
+    this.hero.root.position.set(2.6, 0.3, 7);
+    this.hero.root.rotation.y = Math.PI - 0.4;
+    this.root.add(this.hero.root);
 
-    this.label = addText('Ready to build.', {
-      top: 'calc(env(safe-area-inset-top) + 24px)',
-      left: '0',
-      right: '0',
-      textAlign: 'center'
+    this.t = 0;
+
+    this.title = addText('ALLEY AVENGER', {
+      left: '0', right: '0', top: 'calc(env(safe-area-inset-top) + 40px)',
+      textAlign: 'center', fontSize: '34px', fontWeight: '800',
+      letterSpacing: '2px', color: '#123a6d', textShadow: '0 2px 0 rgba(255,255,255,0.55)'
+    });
+    this.sub = addText('Hold to web up · release to swing', {
+      left: '0', right: '0', top: 'calc(env(safe-area-inset-top) + 86px)',
+      textAlign: 'center', fontSize: '15px', fontWeight: '600', color: '#33567d'
+    });
+    addButton({
+      icon: 'play', label: 'Play',
+      onPress: () => this.game.start(CityScene),
+      style: {
+        position: 'absolute',
+        left: '50%', marginLeft: '-36px',
+        bottom: 'calc(env(safe-area-inset-bottom) + 64px)',
+        width: '72px', height: '72px',
+        backgroundColor: 'rgba(18, 58, 109, 0.85)'
+      }
     });
   }
 
   update(dt) {
-    // Multiplied by dt, never by a per-frame constant: the same code has to
-    // turn at the same speed on a 60Hz and a 120Hz screen.
-    this.cube.rotation.y += dt * 0.8;
-    this.cube.rotation.x += dt * 0.3;
+    this.t += dt;
+    this.hero.root.rotation.y = Math.PI - 0.4 + Math.sin(this.t * 0.6) * 0.35;
+    this.hero.root.position.y = 0.3 + Math.abs(Math.sin(this.t * 2.2)) * 0.05;
+    updateHeroPose(this.hero, 'idle', 1, dt);
+
+    const cam = this.game.camera;
+    cam.position.set(6.5 + Math.sin(this.t * 0.3) * 0.6, 2.6, 13.5);
+    cam.lookAt(2.6, 1.3, 7);
   }
 
-  resize(width, height) {
-    // Pull the camera back on a narrow panel so the subject still fits.
-    this.game.camera.position.z = width < height ? 8 : 6;
-  }
+  resize() {}
 
   dispose() {
-    this.label.remove();
+    clearHUD();
   }
 }
