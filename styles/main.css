@@ -1,0 +1,75 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f4f5f7;
+  --fg: #10131a;
+  --muted: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #10131a;
+    --fg: #f4f5f7;
+    --muted: #9aa3b2;
+  }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.4 -apple-system, system-ui, sans-serif;
+  /* The canvas handles its own gestures; the page must not pan or bounce. */
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The 3D canvas fills the panel and bleeds under the device's own chrome. */
+#stage {
+  position: fixed;
+  inset: 0;
+}
+
+#stage canvas { display: block; width: 100%; height: 100%; }
+
+/* Three has no text and no hit-testing, so every control and readout is a DOM
+   element sitting over the canvas. The layer itself is transparent to touch —
+   only its children take input — otherwise it would swallow every tap meant
+   for the world behind it. */
+#hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  /* Keeps controls clear of the notch and the home indicator. */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+#hud > * { pointer-events: auto; }
+
+.hud-button {
+  width: 64px;
+  height: 64px;
+  border: none;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--fg) 12%, transparent);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 55%;
+  /* Icons are published as CSS variables by registerIcons(): a button asks for
+     one with `style="background-image: var(--icon-play)"`. */
+}
+
+.hud-button:active { transform: scale(0.94); }
+
+.hud-text {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--fg);
+}

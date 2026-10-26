@@ -1,0 +1,7 @@
+{
+  "name": "Alley Avenger",
+  "version": "0.1.0",
+  "entry": "index.html",
+  "engine": "three 0.185.0",
+  "orientation": "any"
+}

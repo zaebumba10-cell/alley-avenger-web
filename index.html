@@ -1,0 +1,21 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Alley Avenger</title>
+<link rel="stylesheet" href="styles/main.css">
+
+<div id="stage"></div>
+<div id="hud"></div>
+
+<!-- Three.js is ESM-only and its addons import the bare specifier "three", so
+     the specifier has to be mapped to the vendored build. The map must come
+     before any module that uses it. Nothing here reaches off-device: every
+     target is a file inside the project. -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.min.js",
+    "three/addons/": "./vendor/three/addons/"
+  }
+}
+</script>
+<script type="module" src="src/main.js"></script>
